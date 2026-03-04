@@ -77,6 +77,17 @@
     <string name="home_lookup_dtc">Look Up DTC Code</string>
     <string name="home_open_calculators">Open Calculators</string>
     <string name="home_voice_assistant">Voice Assistant</string>
+    <string name="home_hero_headline">How can I help\nyour vehicle today?</string>
+    <string name="home_start_ai_chat">Start AI Chat</string>
+    <string name="home_about_title">About AA Car Repair AI</string>
+    <string name="home_about_body">AI-powered car repair assistant. Get instant repair estimates, DTC analysis, visual inspections, and expert guidance — anytime.</string>
+    <string name="home_desc_chat">Ask anything</string>
+    <string name="home_desc_estimate">Repair costs</string>
+    <string name="home_desc_dtc">Error codes</string>
+    <string name="home_desc_calculators">14 tools</string>
+    <string name="home_desc_fleet">Manage vehicles</string>
+    <string name="home_desc_voice">Hands-free AI</string>
+    <string name="home_desc_inspection">Visual AI scan</string>
 
     <!-- Chat Screen -->
     <string name="chat_title">AI Chat</string>

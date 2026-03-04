@@ -1,6 +1,8 @@
 package com.aa.carrepair.feature.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Person
@@ -27,10 +31,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aa.carrepair.R
@@ -40,7 +46,8 @@ private data class PersonaOption(
     val persona: UserPersona,
     val icon: ImageVector,
     val titleRes: Int,
-    val descriptionRes: Int
+    val descriptionRes: Int,
+    val accentColor: androidx.compose.ui.graphics.Color
 )
 
 private val PERSONA_OPTIONS = listOf(
@@ -48,19 +55,22 @@ private val PERSONA_OPTIONS = listOf(
         persona = UserPersona.DIY_OWNER,
         icon = Icons.Default.Person,
         titleRes = R.string.persona_diy_owner,
-        descriptionRes = R.string.persona_diy_owner_desc
+        descriptionRes = R.string.persona_diy_owner_desc,
+        accentColor = androidx.compose.ui.graphics.Color(0xFF1565C0)
     ),
     PersonaOption(
         persona = UserPersona.PROFESSIONAL_TECHNICIAN,
         icon = Icons.Default.Build,
         titleRes = R.string.persona_professional_tech,
-        descriptionRes = R.string.persona_professional_tech_desc
+        descriptionRes = R.string.persona_professional_tech_desc,
+        accentColor = androidx.compose.ui.graphics.Color(0xFF2E7D32)
     ),
     PersonaOption(
         persona = UserPersona.FLEET_MANAGER,
         icon = Icons.Default.DirectionsCar,
         titleRes = R.string.persona_fleet_manager,
-        descriptionRes = R.string.persona_fleet_manager_desc
+        descriptionRes = R.string.persona_fleet_manager_desc,
+        accentColor = androidx.compose.ui.graphics.Color(0xFF6A1B9A)
     )
 )
 
@@ -77,15 +87,17 @@ fun PersonaSelectionScreen(
     Scaffold(
         topBar = {
             com.aa.carrepair.ui.components.AATopAppBar(
-                title = stringResource(R.string.persona_selection_title)
+                title = stringResource(R.string.persona_selection_title),
+                branded = true
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
@@ -122,9 +134,10 @@ private fun PersonaCard(
             .fillMaxWidth()
             .semantics { contentDescription = "$title persona" },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(20.dp)
     ) {
         Row(
             modifier = Modifier
@@ -132,26 +145,43 @@ private fun PersonaCard(
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = option.icon,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            // Coloured icon container
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(option.accentColor.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = option.icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = option.accentColor
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = stringResource(option.descriptionRes),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }
