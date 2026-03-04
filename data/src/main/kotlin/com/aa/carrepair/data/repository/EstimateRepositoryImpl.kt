@@ -13,7 +13,6 @@ import com.aa.carrepair.domain.model.RepairEstimate
 import com.aa.carrepair.domain.model.Vehicle
 import com.aa.carrepair.domain.repository.EstimateRepository
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
@@ -104,7 +103,6 @@ class EstimateRepositoryImpl @Inject constructor(
     )
 
     private fun EstimateEntity.toDomain(vehicle: Vehicle): RepairEstimate {
-        val partsType = Types.newParameterizedType(List::class.java, Map::class.java)
         return RepairEstimate(
             id = id,
             vehicle = vehicle,
