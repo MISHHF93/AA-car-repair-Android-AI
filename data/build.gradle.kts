@@ -12,6 +12,8 @@ android {
     defaultConfig {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "AA_API_BASE_URL", "\"${project.findProperty("AA_API_BASE_URL") ?: "https://api.aa-carrepair.com/"}\"")
+        buildConfigField("String", "AA_API_KEY", "\"${project.findProperty("AA_API_KEY") ?: ""}\"")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
