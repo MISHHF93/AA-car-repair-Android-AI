@@ -52,6 +52,18 @@
     <string name="persona_fleet_manager">Fleet / Service Manager</string>
     <string name="persona_fleet_manager_desc">Fleet cost analysis, analytics dashboards, and audit trails</string>
 
+    <!-- Sign In -->
+    <string name="sign_in_tagline">Your AI-powered automotive assistant for repair estimates, DTC analysis, and expert guidance.</string>
+    <string name="sign_in_get_started">Get Started</string>
+    <string name="sign_in_disclaimer">By continuing you agree to our Terms of Service and Privacy Policy.</string>
+
+    <!-- Settings Profile -->
+    <string name="settings_current_profile">Current Profile</string>
+    <string name="settings_change_profile">Change Profile</string>
+
+    <!-- Plurals-like patterns (vehicle count) -->
+    <string name="home_vehicles_on_file">%1$d vehicle(s) on file</string>
+
     <!-- Home Screen -->
     <string name="home_greeting_morning">Good morning!</string>
     <string name="home_greeting_afternoon">Good afternoon!</string>

@@ -15,6 +15,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.aa.carrepair.feature.auth.PersonaSelectionScreen
+import com.aa.carrepair.feature.auth.SignInScreen
 import com.aa.carrepair.feature.calculators.CalculatorHubScreen
 import com.aa.carrepair.feature.chat.ChatScreen
 import com.aa.carrepair.feature.dtc.DtcScreen
@@ -31,25 +33,33 @@ import com.aa.carrepair.feature.home.HomeScreen
 
 private const val NAV_ANIMATION_DURATION = 300
 
+/** Routes where the bottom navigation bar should be visible. */
+private val BOTTOM_NAV_ROUTES = setOf(
+    Screen.Home.route,
+    Screen.Chat("").route,
+    Screen.EstimatorVehicle.route,
+    Screen.DtcAnalysis("").route,
+    Screen.CalculatorHub.route,
+)
+
 @Composable
 fun AppNavGraph(
+    startDestination: String = Screen.Home.route,
     deepLinkVin: String? = null,
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val bottomNavRoutes = setOf(
-        Screen.Home.route,
-        Screen.Chat("").route,
-        Screen.EstimatorVehicle.route,
-        Screen.DtcAnalysis("").route,
-        Screen.CalculatorHub.route,
-    )
+    // If a deep-link VIN is present, override to the estimator start regardless of onboarding
+    val resolvedStart = if (deepLinkVin != null) Screen.EstimatorVehicle.route else startDestination
+
+    val showBottomBar = currentRoute in BOTTOM_NAV_ROUTES ||
+        BOTTOM_NAV_ROUTES.any { currentRoute?.startsWith(it.substringBefore("{")) == true }
 
     Scaffold(
         bottomBar = {
-            if (currentRoute in bottomNavRoutes || bottomNavRoutes.any { currentRoute?.startsWith(it.substringBefore("{")) == true }) {
+            if (showBottomBar) {
                 BottomNavBar(
                     navController = navController,
                     currentRoute = currentRoute
@@ -59,7 +69,7 @@ fun AppNavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = if (deepLinkVin != null) Screen.EstimatorVehicle.route else Screen.Home.route,
+            startDestination = resolvedStart,
             modifier = Modifier.padding(paddingValues),
             enterTransition = {
                 slideIntoContainer(
@@ -86,6 +96,29 @@ fun AppNavGraph(
                 )
             }
         ) {
+            // ── Onboarding ──────────────────────────────────────────────────
+            composable(Screen.SignIn.route) {
+                SignInScreen(
+                    onGetStarted = {
+                        navController.navigate(Screen.PersonaSelection.route) {
+                            popUpTo(Screen.SignIn.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.PersonaSelection.route) {
+                PersonaSelectionScreen(
+                    onPersonaSelected = {
+                        navController.navigate(Screen.Home.route) {
+                            // Clear the entire back stack so there is no way back to onboarding.
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            // ── Main Screens ─────────────────────────────────────────────────
             composable(Screen.Home.route) {
                 HomeScreen(
                     onNavigateToChat = { sessionId ->
@@ -105,6 +138,9 @@ fun AppNavGraph(
                     },
                     onNavigateToVoice = {
                         navController.navigate(Screen.VoiceAssistant.route)
+                    },
+                    onNavigateToInspection = {
+                        navController.navigate(Screen.Inspection.route)
                     },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
@@ -214,7 +250,12 @@ fun AppNavGraph(
 
             composable(Screen.Settings.route) {
                 SettingsScreen(
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToPersonaSelection = {
+                        navController.navigate(Screen.PersonaSelection.route) {
+                            popUpTo(Screen.Home.route) { inclusive = false }
+                        }
+                    }
                 )
             }
         }

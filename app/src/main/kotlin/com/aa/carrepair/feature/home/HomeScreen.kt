@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Mic
@@ -29,12 +30,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.aa.carrepair.R
+import java.time.LocalTime
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,27 +53,44 @@ fun HomeScreen(
     onNavigateToCalculators: () -> Unit,
     onNavigateToFleet: () -> Unit,
     onNavigateToVoice: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToInspection: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("AA Car Repair AI") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings))
                     }
                 }
             )
         }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text("Quick Actions", style = MaterialTheme.typography.titleLarge)
+                val greeting = timeBasedGreeting()
+                Text(
+                    text = greeting,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = stringResource(R.string.home_quick_actions),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -77,13 +101,13 @@ fun HomeScreen(
                 ) {
                     QuickActionCard(
                         icon = Icons.Default.Chat,
-                        label = "AI Chat",
+                        label = stringResource(R.string.nav_chat),
                         modifier = Modifier.weight(1f),
                         onClick = { onNavigateToChat(UUID.randomUUID().toString()) }
                     )
                     QuickActionCard(
                         icon = Icons.Default.Build,
-                        label = "Get Estimate",
+                        label = stringResource(R.string.home_get_estimate),
                         modifier = Modifier.weight(1f),
                         onClick = onNavigateToEstimator
                     )
@@ -97,13 +121,13 @@ fun HomeScreen(
                 ) {
                     QuickActionCard(
                         icon = Icons.Default.Search,
-                        label = "DTC Lookup",
+                        label = stringResource(R.string.home_lookup_dtc),
                         modifier = Modifier.weight(1f),
                         onClick = onNavigateToDtc
                     )
                     QuickActionCard(
                         icon = Icons.Default.Calculate,
-                        label = "Calculators",
+                        label = stringResource(R.string.nav_calculators),
                         modifier = Modifier.weight(1f),
                         onClick = onNavigateToCalculators
                     )
@@ -117,15 +141,47 @@ fun HomeScreen(
                 ) {
                     QuickActionCard(
                         icon = Icons.Default.DirectionsCar,
-                        label = "Fleet",
+                        label = stringResource(R.string.nav_fleet),
                         modifier = Modifier.weight(1f),
                         onClick = onNavigateToFleet
                     )
                     QuickActionCard(
                         icon = Icons.Default.Mic,
-                        label = "Voice",
+                        label = stringResource(R.string.nav_voice),
                         modifier = Modifier.weight(1f),
                         onClick = onNavigateToVoice
+                    )
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    QuickActionCard(
+                        icon = Icons.Default.CameraAlt,
+                        label = stringResource(R.string.nav_inspection),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToInspection
+                    )
+                    // Spacer to keep the grid even when only one item is in the row
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+
+            if (uiState.recentVehicleCount > 0) {
+                item {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.home_recent_vehicles),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.home_vehicles_on_file, uiState.recentVehicleCount),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -141,6 +197,16 @@ fun HomeScreen(
                 )
             }
         }
+    }
+}
+
+/** Returns a time-appropriate greeting string. */
+@Composable
+private fun timeBasedGreeting(): String {
+    return when (LocalTime.now().hour) {
+        in 5..11 -> stringResource(R.string.home_greeting_morning)
+        in 12..16 -> stringResource(R.string.home_greeting_afternoon)
+        else -> stringResource(R.string.home_greeting_evening)
     }
 }
 

@@ -5,20 +5,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.aa.carrepair.navigation.AppNavGraph
 import com.aa.carrepair.ui.theme.AACarRepairTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val appViewModel: AppViewModel by viewModels()
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -29,8 +32,13 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // Keep the splash screen visible until the start destination is determined from DataStore.
+        splashScreen.setKeepOnScreenCondition {
+            appViewModel.startDestination.value == null
+        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -38,10 +46,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AACarRepairTheme {
+                val startDestination by appViewModel.startDestination.collectAsState()
+
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    AppNavGraph(
-                        deepLinkVin = intent?.data?.host
-                    )
+                    // Only render the nav graph once we know where to start (avoids a flash).
+                    startDestination?.let { dest ->
+                        AppNavGraph(
+                            startDestination = dest,
+                            deepLinkVin = intent?.data?.host
+                        )
+                    }
                 }
             }
         }
