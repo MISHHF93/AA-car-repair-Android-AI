@@ -4,4 +4,8 @@
     <string name="chat_input_hint">Ask me anything…</string>
     <string name="chat_typing_indicator">AI is thinking…</string>
     <string name="cd_send_button">Send message</string>
+    <string name="cd_voice_button">Voice input</string>
+    <string name="chat_empty_title">AA Car Repair AI</string>
+    <string name="chat_empty_subtitle">Ask me anything about your vehicle — from DTC codes to repair costs and maintenance advice.</string>
+    <string name="chat_empty_suggestions_header">Try asking…</string>
 </resources>
