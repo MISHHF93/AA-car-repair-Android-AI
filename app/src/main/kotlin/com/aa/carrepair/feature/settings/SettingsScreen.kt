@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -19,13 +21,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aa.carrepair.BuildConfig
+import com.aa.carrepair.R
 
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToPersonaSelection: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -33,7 +38,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             com.aa.carrepair.ui.components.AATopAppBar(
-                title = "Settings",
+                title = stringResource(R.string.settings_title),
                 onNavigateBack = onNavigateBack
             )
         }
@@ -47,18 +52,37 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            SettingsSection(title = "Privacy") {
+            SettingsSection(title = stringResource(R.string.settings_persona)) {
+                uiState.selectedPersonaDisplayName?.let { displayName ->
+                    SettingsInfoRow(
+                        title = stringResource(R.string.settings_current_profile),
+                        value = displayName
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        viewModel.resetPersona(onComplete = onNavigateToPersonaSelection)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors()
+                ) {
+                    Text(text = stringResource(R.string.settings_change_profile))
+                }
+            }
+
+            SettingsSection(title = stringResource(R.string.settings_privacy)) {
                 SettingsToggleRow(
-                    title = "Privacy Mode",
-                    subtitle = "Disable telemetry and analytics",
+                    title = stringResource(R.string.settings_privacy_mode),
+                    subtitle = stringResource(R.string.settings_privacy_mode_desc),
                     checked = uiState.privacyModeEnabled,
                     onCheckedChange = viewModel::setPrivacyMode
                 )
             }
 
-            SettingsSection(title = "About") {
+            SettingsSection(title = stringResource(R.string.settings_about)) {
                 SettingsInfoRow(
-                    title = "App Version",
+                    title = stringResource(R.string.settings_version),
                     value = BuildConfig.VERSION_NAME
                 )
             }

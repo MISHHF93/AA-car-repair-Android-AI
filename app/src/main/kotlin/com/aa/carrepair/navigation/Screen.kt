@@ -1,6 +1,7 @@
 package com.aa.carrepair.navigation
 
 sealed class Screen(val route: String) {
+    object SignIn : Screen("sign_in")
     object Home : Screen("home")
     object PersonaSelection : Screen("persona_selection")
     data class Chat(val sessionId: String = "{sessionId}") : Screen("chat/{sessionId}") {

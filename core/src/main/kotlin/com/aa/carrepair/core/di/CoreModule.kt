@@ -2,6 +2,7 @@ package com.aa.carrepair.core.di
 
 import android.content.Context
 import com.aa.carrepair.core.network.NetworkMonitor
+import com.aa.carrepair.core.preferences.UserPreferencesManager
 import com.aa.carrepair.core.privacy.PrivacyManager
 import com.aa.carrepair.core.privacy.TelemetryRedactor
 import com.aa.carrepair.core.security.EncryptionManager
@@ -37,4 +38,10 @@ object CoreModule {
     @Provides
     @Singleton
     fun provideTelemetryRedactor(): TelemetryRedactor = TelemetryRedactor()
+
+    @Provides
+    @Singleton
+    fun provideUserPreferencesManager(
+        @ApplicationContext context: Context
+    ): UserPreferencesManager = UserPreferencesManager(context)
 }
