@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">AA Car Repair AI</string>
+    <string name="app_version">Version %1$s</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_estimator">Estimator</string>
+    <string name="nav_dtc">DTC</string>
+    <string name="nav_calculators">Calculators</string>
+    <string name="nav_fleet">Fleet</string>
+    <string name="nav_voice">Voice</string>
+    <string name="nav_inspection">Inspection</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_analytics">Analytics</string>
+
+    <!-- Common Actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_share">Share</string>
+    <string name="action_export">Export</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_back">Back</string>
+    <string name="action_next">Next</string>
+    <string name="action_submit">Submit</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_select_all">Select All</string>
+
+    <!-- States -->
+    <string name="state_loading">Loading…</string>
+    <string name="state_error">Something went wrong</string>
+    <string name="state_empty">No results found</string>
+    <string name="state_offline">You are offline</string>
+    <string name="state_syncing">Syncing…</string>
+
+    <!-- Persona Selection -->
+    <string name="persona_selection_title">Who are you?</string>
+    <string name="persona_selection_subtitle">Choose your profile to get a personalized experience</string>
+    <string name="persona_diy_owner">DIY Vehicle Owner</string>
+    <string name="persona_diy_owner_desc">Self-service troubleshooting, cost estimates, and maintenance schedules</string>
+    <string name="persona_professional_tech">Professional Technician</string>
+    <string name="persona_professional_tech_desc">Hands-free voice assistant, DTC codes, and repair procedures</string>
+    <string name="persona_fleet_manager">Fleet / Service Manager</string>
+    <string name="persona_fleet_manager_desc">Fleet cost analysis, analytics dashboards, and audit trails</string>
+
+    <!-- Home Screen -->
+    <string name="home_greeting_morning">Good morning!</string>
+    <string name="home_greeting_afternoon">Good afternoon!</string>
+    <string name="home_greeting_evening">Good evening!</string>
+    <string name="home_quick_actions">Quick Actions</string>
+    <string name="home_recent_vehicles">Recent Vehicles</string>
+    <string name="home_recent_estimates">Recent Estimates</string>
+    <string name="home_start_diagnosis">Start Diagnosis</string>
+    <string name="home_get_estimate">Get Estimate</string>
+    <string name="home_scan_vin">Scan VIN</string>
+    <string name="home_lookup_dtc">Look Up DTC Code</string>
+    <string name="home_open_calculators">Open Calculators</string>
+    <string name="home_voice_assistant">Voice Assistant</string>
+
+    <!-- Chat Screen -->
+    <string name="chat_title">AI Chat</string>
+    <string name="chat_input_hint">Ask me anything about your vehicle…</string>
+    <string name="chat_send_button">Send message</string>
+    <string name="chat_attach_image">Attach image</string>
+    <string name="chat_voice_input">Voice input</string>
+    <string name="chat_agent_general">General Assistant</string>
+    <string name="chat_agent_diagnosis">Diagnosis Agent</string>
+    <string name="chat_agent_estimator">Estimator Agent</string>
+    <string name="chat_agent_safety">Safety Agent</string>
+    <string name="chat_typing_indicator">AI is thinking…</string>
+    <string name="chat_new_session">New Conversation</string>
+    <string name="chat_history">Chat History</string>
+    <string name="chat_confidence">Confidence: %1$d%%</string>
+    <string name="chat_copy_message">Copy message</string>
+    <string name="chat_feedback_helpful">Helpful</string>
+    <string name="chat_feedback_not_helpful">Not helpful</string>
+
+    <!-- Estimator -->
+    <string name="estimator_title">Repair Estimator</string>
+    <string name="estimator_step_vehicle">Step 1: Identify Vehicle</string>
+    <string name="estimator_step_category">Step 2: Select Service</string>
+    <string name="estimator_step_diagnostic">Step 3: Describe Issue</string>
+    <string name="estimator_step_result">Step 4: Your Estimate</string>
+    <string name="estimator_vin_label">Vehicle Identification Number (VIN)</string>
+    <string name="estimator_vin_hint">Enter 17-digit VIN</string>
+    <string name="estimator_vin_scan">Scan VIN Barcode</string>
+    <string name="estimator_vin_decode">Decode VIN</string>
+    <string name="estimator_manual_entry">Manual Entry</string>
+    <string name="estimator_year_hint">Year</string>
+    <string name="estimator_make_hint">Make</string>
+    <string name="estimator_model_hint">Model</string>
+    <string name="estimator_engine_hint">Engine</string>
+    <string name="estimator_mileage_hint">Mileage</string>
+    <string name="estimator_select_category">Select Service Category</string>
+    <string name="estimator_describe_issue">Describe the Issue</string>
+    <string name="estimator_issue_hint">Describe symptoms, sounds, or warning lights…</string>
+    <string name="estimator_generating">Generating your estimate…</string>
+    <string name="estimator_total">Total Estimate</string>
+    <string name="estimator_parts_label">Parts</string>
+    <string name="estimator_labor_label">Labor</string>
+    <string name="estimator_fees_label">Fees &amp; Taxes</string>
+    <string name="estimator_disclaimer">This estimate is non-binding and provided for informational purposes only. Actual costs may vary based on vehicle inspection and parts availability.</string>
+    <string name="estimator_oem_parts">OEM Parts</string>
+    <string name="estimator_aftermarket_parts">Aftermarket Parts</string>
+    <string name="estimator_save_estimate">Save Estimate</string>
+    <string name="estimator_share_estimate">Share Estimate</string>
+
+    <!-- Service Categories -->
+    <string name="category_engine">Engine &amp; Drivetrain</string>
+    <string name="category_transmission">Transmission</string>
+    <string name="category_brakes">Brakes</string>
+    <string name="category_suspension">Suspension &amp; Steering</string>
+    <string name="category_electrical">Electrical &amp; Electronics</string>
+    <string name="category_ac">A/C &amp; Heating</string>
+    <string name="category_exhaust">Exhaust System</string>
+    <string name="category_fuel">Fuel System</string>
+    <string name="category_tires">Tires &amp; Wheels</string>
+    <string name="category_body">Body &amp; Glass</string>
+    <string name="category_maintenance">Scheduled Maintenance</string>
+    <string name="category_diagnostics">Diagnostics</string>
+    <string name="category_cooling">Cooling System</string>
+    <string name="category_safety">Safety Systems</string>
+
+    <!-- DTC -->
+    <string name="dtc_title">DTC Code Lookup</string>
+    <string name="dtc_search_hint">Enter DTC code (e.g. P0300)</string>
+    <string name="dtc_scan_obd">Scan OBD-II Port</string>
+    <string name="dtc_code_label">Code</string>
+    <string name="dtc_definition_label">Definition</string>
+    <string name="dtc_causes_label">Possible Causes</string>
+    <string name="dtc_symptoms_label">Symptoms</string>
+    <string name="dtc_repair_history">Repair History</string>
+    <string name="dtc_related_codes">Related Codes</string>
+    <string name="dtc_confidence_label">Diagnostic Confidence</string>
+    <string name="dtc_safety_level">Safety Level</string>
+    <string name="dtc_not_found">Code not found in database</string>
+    <string name="dtc_obd_connecting">Connecting to OBD-II adapter…</string>
+    <string name="dtc_obd_reading">Reading fault codes…</string>
+    <string name="dtc_obd_clear_codes">Clear Fault Codes</string>
+    <string name="dtc_obd_clear_confirm">Are you sure you want to clear all fault codes? This cannot be undone.</string>
+
+    <!-- Safety Levels -->
+    <string name="safety_critical">CRITICAL — Do not drive</string>
+    <string name="safety_high">HIGH — Get repaired soon</string>
+    <string name="safety_medium">MEDIUM — Monitor closely</string>
+    <string name="safety_low">LOW — Can wait</string>
+
+    <!-- Calculators -->
+    <string name="calculators_title">Calculators</string>
+    <string name="calc_labor_time">Labor Time Calculator</string>
+    <string name="calc_parts_markup">Parts Markup Calculator</string>
+    <string name="calc_repair_replace">Repair vs. Replace</string>
+    <string name="calc_maintenance_schedule">Maintenance Schedule</string>
+    <string name="calc_fleet_cost">Fleet Cost Analysis</string>
+    <string name="calc_diagnostic_confidence">Diagnostic Confidence</string>
+    <string name="calc_co2_impact">CO₂ Impact Calculator</string>
+    <string name="calc_break_even">Break-Even Analysis</string>
+    <string name="calc_warranty_roi">Warranty ROI</string>
+    <string name="calc_obd_analyzer">OBD Data Analyzer</string>
+    <string name="calc_tire_wear">Tire Wear Estimator</string>
+    <string name="calc_battery_health">Battery Health</string>
+    <string name="calc_coolant_pressure">Coolant Pressure</string>
+    <string name="calc_shop_efficiency">Shop Efficiency</string>
+    <string name="calc_calculate">Calculate</string>
+    <string name="calc_result">Result</string>
+    <string name="calc_save_result">Save Result</string>
+    <string name="calc_hours_label">Hours</string>
+    <string name="calc_rate_label">Rate ($/hr)</string>
+    <string name="calc_cost_label">Cost ($)</string>
+    <string name="calc_price_label">Price ($)</string>
+    <string name="calc_markup_pct">Markup (%)</string>
+    <string name="calc_mileage_label">Mileage</string>
+    <string name="calc_age_label">Vehicle Age (years)</string>
+    <string name="calc_repair_cost_label">Repair Cost ($)</string>
+    <string name="calc_vehicle_value_label">Vehicle Value ($)</string>
+
+    <!-- Fleet -->
+    <string name="fleet_title">Fleet Management</string>
+    <string name="fleet_add_vehicle">Add Vehicle</string>
+    <string name="fleet_total_vehicles">Total Vehicles</string>
+    <string name="fleet_active_vehicles">Active</string>
+    <string name="fleet_maintenance_due">Maintenance Due</string>
+    <string name="fleet_total_cost_ytd">Total Cost YTD</string>
+    <string name="fleet_avg_cost_per_vehicle">Avg Cost / Vehicle</string>
+    <string name="fleet_vehicle_detail">Vehicle Detail</string>
+    <string name="fleet_maintenance_history">Maintenance History</string>
+    <string name="fleet_cost_breakdown">Cost Breakdown</string>
+    <string name="fleet_schedule_maintenance">Schedule Maintenance</string>
+    <string name="fleet_assignment">Assignment</string>
+    <string name="fleet_driver">Driver</string>
+    <string name="fleet_department">Department</string>
+
+    <!-- Voice Assistant -->
+    <string name="voice_title">Voice Assistant</string>
+    <string name="voice_tap_to_speak">Tap to speak</string>
+    <string name="voice_listening">Listening…</string>
+    <string name="voice_processing">Processing…</string>
+    <string name="voice_speaking">Speaking…</string>
+    <string name="voice_wake_word">Say "Hey AA" to activate</string>
+    <string name="voice_push_to_talk">Hold to talk</string>
+    <string name="voice_offline_mode">Offline mode — limited commands available</string>
+    <string name="voice_perm_required">Microphone permission is required for voice features</string>
+    <string name="voice_grant_permission">Grant Permission</string>
+
+    <!-- Inspection -->
+    <string name="inspection_title">Visual Inspection</string>
+    <string name="inspection_mode_damage">Damage Assessment</string>
+    <string name="inspection_mode_parts">Parts Identification</string>
+    <string name="inspection_mode_wear">Wear Analysis</string>
+    <string name="inspection_take_photo">Take Photo</string>
+    <string name="inspection_select_from_gallery">Select from Gallery</string>
+    <string name="inspection_analyzing">Analyzing image…</string>
+    <string name="inspection_findings">Inspection Findings</string>
+    <string name="inspection_severity_score">Severity Score</string>
+    <string name="inspection_no_damage_found">No significant damage detected</string>
+    <string name="inspection_camera_perm_required">Camera permission is required for inspection</string>
+    <string name="inspection_save_report">Save Report</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_persona">Your Profile</string>
+    <string name="settings_theme">Appearance</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_system">Follow System</string>
+    <string name="settings_units">Units</string>
+    <string name="settings_units_imperial">Imperial (miles, °F)</string>
+    <string name="settings_units_metric">Metric (km, °C)</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy_mode">Privacy Mode</string>
+    <string name="settings_privacy_mode_desc">Disable telemetry and analytics</string>
+    <string name="settings_data_export">Export My Data</string>
+    <string name="settings_data_delete">Delete All Data</string>
+    <string name="settings_data_delete_confirm">This will permanently delete all your data. This cannot be undone.</string>
+    <string name="settings_obd">OBD-II Adapter</string>
+    <string name="settings_obd_device">Connected Device</string>
+    <string name="settings_obd_connect">Connect Adapter</string>
+    <string name="settings_obd_disconnect">Disconnect</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_maintenance_alerts">Maintenance Alerts</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">App Version</string>
+    <string name="settings_licenses">Open Source Licenses</string>
+    <string name="settings_support">Support</string>
+
+    <!-- Errors -->
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_vin_invalid">Invalid VIN. Please enter a valid 17-character VIN.</string>
+    <string name="error_dtc_invalid">Invalid DTC code format.</string>
+    <string name="error_camera_unavailable">Camera is not available on this device.</string>
+    <string name="error_generic">An unexpected error occurred.</string>
+    <string name="error_auth">Authentication failed. Please sign in again.</string>
+
+    <!-- Accessibility -->
+    <string name="cd_back_button">Navigate back</string>
+    <string name="cd_menu_button">Open menu</string>
+    <string name="cd_search_button">Search</string>
+    <string name="cd_send_button">Send message</string>
+    <string name="cd_voice_button">Voice input</string>
+    <string name="cd_camera_button">Open camera</string>
+    <string name="cd_safety_badge">Safety level indicator</string>
+    <string name="cd_confidence_badge">Confidence score indicator</string>
+    <string name="cd_loading">Loading content</string>
+    <string name="cd_vehicle_card">Vehicle card</string>
+    <string name="cd_chat_bubble_user">Your message</string>
+    <string name="cd_chat_bubble_ai">AI response</string>
+
+    <!-- Formatting -->
+    <string name="format_currency">$%,.2f</string>
+    <string name="format_percent">%d%%</string>
+    <string name="format_mileage">%,d miles</string>
+    <string name="format_km">%,d km</string>
+    <string name="format_hours">%.1f hrs</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AACarRepair" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/aa_navy</item>
+        <item name="colorSecondary">@color/aa_amber</item>
+        <item name="android:windowBackground">@color/surface_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.AACarRepair.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/aa_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.AACarRepair</item>
+    </style>
+</resources>

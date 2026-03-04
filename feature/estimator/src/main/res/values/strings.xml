@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="estimator_step_vehicle">Step 1: Identify Vehicle</string>
+    <string name="estimator_step_category">Step 2: Select Service</string>
+    <string name="estimator_step_diagnostic">Step 3: Describe Issue</string>
+    <string name="estimator_step_result">Step 4: Your Estimate</string>
+    <string name="estimator_vin_label">Vehicle Identification Number (VIN)</string>
+    <string name="estimator_vin_hint">Enter 17-digit VIN</string>
+    <string name="estimator_vin_decode">Decode VIN</string>
+    <string name="estimator_describe_issue">Describe the Issue</string>
+    <string name="estimator_issue_hint">Describe symptoms, sounds, or warning lights…</string>
+    <string name="estimator_generating">Generating your estimate…</string>
+    <string name="estimator_total">Total Estimate</string>
+    <string name="estimator_parts_label">Parts</string>
+    <string name="estimator_labor_label">Labor</string>
+    <string name="estimator_fees_label">Fees and Taxes</string>
+    <string name="estimator_oem_parts">OEM Parts</string>
+    <string name="action_next">Next</string>
+    <string name="action_submit">Submit</string>
+    <string name="state_error">Something went wrong</string>
+</resources>
