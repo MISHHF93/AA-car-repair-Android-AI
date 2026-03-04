@@ -11,6 +11,8 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -62,6 +64,8 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout

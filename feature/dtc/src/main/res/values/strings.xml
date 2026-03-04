@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dtc_title">DTC Code Lookup</string>
+    <string name="dtc_search_hint">Enter DTC code (e.g., P0300)</string>
+    <string name="dtc_symptoms_label">Symptoms</string>
+    <string name="dtc_causes_label">Possible Causes</string>
+</resources>

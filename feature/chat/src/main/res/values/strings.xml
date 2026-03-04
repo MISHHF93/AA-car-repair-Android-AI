@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chat_title">AI Chat</string>
+    <string name="chat_input_hint">Ask me anything…</string>
+    <string name="chat_typing_indicator">AI is thinking…</string>
+    <string name="cd_send_button">Send message</string>
+</resources>
