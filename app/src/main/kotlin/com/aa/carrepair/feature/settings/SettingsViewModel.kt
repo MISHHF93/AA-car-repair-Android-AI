@@ -20,7 +20,11 @@ data class SettingsUiState(
     val analyticsEnabled: Boolean = true,
     val theme: String = "system",
     val units: String = "imperial",
-    val selectedPersonaDisplayName: String? = null
+    val notificationsEnabled: Boolean = true,
+    val selectedPersonaDisplayName: String? = null,
+    val userDisplayName: String? = null,
+    val userEmail: String? = null,
+    val showDeleteConfirmation: Boolean = false
 )
 
 @HiltViewModel
@@ -49,6 +53,26 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(selectedPersonaDisplayName = displayName) }
             }
             .launchIn(viewModelScope)
+
+        userPreferencesManager.userDisplayName
+            .onEach { name -> _uiState.update { it.copy(userDisplayName = name) } }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.userEmail
+            .onEach { email -> _uiState.update { it.copy(userEmail = email) } }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.theme
+            .onEach { theme -> _uiState.update { it.copy(theme = theme) } }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.units
+            .onEach { units -> _uiState.update { it.copy(units = units) } }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.notificationsEnabled
+            .onEach { enabled -> _uiState.update { it.copy(notificationsEnabled = enabled) } }
+            .launchIn(viewModelScope)
     }
 
     fun setPrivacyMode(enabled: Boolean) {
@@ -57,10 +81,52 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    /** Clears the onboarding state so the persona-selection screen is shown on next launch. */
+    fun setTheme(theme: String) {
+        viewModelScope.launch {
+            userPreferencesManager.setTheme(theme)
+        }
+    }
+
+    fun setUnits(units: String) {
+        viewModelScope.launch {
+            userPreferencesManager.setUnits(units)
+        }
+    }
+
+    fun setNotificationsEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesManager.setNotificationsEnabled(enabled)
+        }
+    }
+
+    fun showDeleteConfirmation() {
+        _uiState.update { it.copy(showDeleteConfirmation = true) }
+    }
+
+    fun dismissDeleteConfirmation() {
+        _uiState.update { it.copy(showDeleteConfirmation = false) }
+    }
+
+    fun deleteAllData(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            privacyManager.deleteAllUserData {
+                userPreferencesManager.signOut()
+            }
+            _uiState.update { it.copy(showDeleteConfirmation = false) }
+            onComplete()
+        }
+    }
+
     fun resetPersona(onComplete: () -> Unit) {
         viewModelScope.launch {
             userPreferencesManager.resetOnboarding()
+            onComplete()
+        }
+    }
+
+    fun signOut(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            userPreferencesManager.signOut()
             onComplete()
         }
     }

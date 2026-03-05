@@ -30,7 +30,7 @@ class SafetyClassifier @Inject constructor() {
 
     fun classify(content: String, dtcCodes: List<String> = emptyList()): SafetyClassification {
         val lowerContent = content.lowercase()
-        val allText = (listOf(lowerContent) + dtcCodes.map { it.uppercase() }).joinToString(" ")
+        val allText = (listOf(lowerContent) + dtcCodes.map { it.lowercase() }).joinToString(" ")
 
         val criticalTriggers = criticalKeywords.filter { allText.contains(it.lowercase()) }
         val highTriggers = highKeywords.filter { allText.contains(it.lowercase()) }

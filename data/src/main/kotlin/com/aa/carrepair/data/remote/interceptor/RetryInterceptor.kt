@@ -13,21 +13,32 @@ class RetryInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         var lastException: IOException? = null
+        var lastResponse: Response? = null
 
         repeat(maxRetries) { attempt ->
             try {
                 val response = chain.proceed(request)
-                if (response.isSuccessful || response.code < 500) return response
-                response.close()
+                if (response.isSuccessful || response.code < 500) {
+                    lastResponse?.close()
+                    return response
+                }
+                Timber.w("Server error %d (attempt %d/%d): %s", response.code, attempt + 1, maxRetries, request.url)
+                lastResponse?.close()
+                lastResponse = response
             } catch (e: IOException) {
                 lastException = e
                 Timber.w("Request failed (attempt ${attempt + 1}/$maxRetries): %s", e.message)
-                if (attempt < maxRetries - 1) {
-                    Thread.sleep(baseDelayMs * (attempt + 1))
-                }
+            }
+            if (attempt < maxRetries - 1) {
+                Thread.sleep(baseDelayMs * (attempt + 1))
             }
         }
 
-        throw lastException ?: IOException("Request failed after $maxRetries attempts")
+        if (lastException != null) {
+            lastResponse?.close()
+            throw lastException!!
+        }
+
+        return lastResponse ?: throw IOException("Request failed after $maxRetries attempts")
     }
 }

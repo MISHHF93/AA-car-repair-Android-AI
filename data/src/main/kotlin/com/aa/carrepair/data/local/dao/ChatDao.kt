@@ -12,7 +12,7 @@ interface ChatDao {
     @Query("SELECT * FROM chat_messages WHERE session_id = :sessionId ORDER BY timestamp ASC")
     fun getBySession(sessionId: String): Flow<List<ChatMessageEntity>>
 
-    @Query("SELECT DISTINCT session_id FROM chat_messages ORDER BY MAX(timestamp) DESC")
+    @Query("SELECT session_id FROM chat_messages GROUP BY session_id ORDER BY MAX(timestamp) DESC")
     fun getAllSessionIds(): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

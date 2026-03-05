@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -71,6 +72,7 @@ fun HomeScreen(
     onNavigateToVoice: () -> Unit,
     onNavigateToInspection: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -85,6 +87,12 @@ fun HomeScreen(
                     )
                 },
                 actions = {
+                    IconButton(onClick = onNavigateToProfile) {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = stringResource(R.string.profile_title)
+                        )
+                    }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             Icons.Default.Settings,
@@ -109,6 +117,7 @@ fun HomeScreen(
             // ── Hero banner ──────────────────────────────────────────────────────
             item {
                 HeroBanner(
+                    userName = uiState.userDisplayName,
                     onStartChat = { onNavigateToChat(UUID.randomUUID().toString()) }
                 )
             }
@@ -258,7 +267,7 @@ fun HomeScreen(
 
 // ── Hero banner ────────────────────────────────────────────────────────────────
 @Composable
-private fun HeroBanner(onStartChat: () -> Unit) {
+private fun HeroBanner(userName: String? = null, onStartChat: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -287,8 +296,9 @@ private fun HeroBanner(onStartChat: () -> Unit) {
         ) {
             Column {
                 val greeting = timeBasedGreeting()
+                val personalGreeting = if (userName != null) "$greeting, $userName" else greeting
                 Text(
-                    text = greeting,
+                    text = personalGreeting,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White.copy(alpha = 0.8f)
                 )

@@ -15,8 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.aa.carrepair.R
 import com.aa.carrepair.domain.model.SafetyLevel
+import com.aa.carrepair.ui.R
+import com.aa.carrepair.ui.theme.SafetyCritical
+import com.aa.carrepair.ui.theme.SafetyHigh
+import com.aa.carrepair.ui.theme.SafetyLow
+import com.aa.carrepair.ui.theme.SafetyMedium
 
 @Composable
 fun SafetyBadge(
@@ -24,10 +28,10 @@ fun SafetyBadge(
     modifier: Modifier = Modifier
 ) {
     val (color, textResId) = when (level) {
-        SafetyLevel.CRITICAL -> Color(0xFFD32F2F) to R.string.safety_critical
-        SafetyLevel.HIGH -> Color(0xFFF57C00) to R.string.safety_high
-        SafetyLevel.MEDIUM -> Color(0xFFFBC02D) to R.string.safety_medium
-        SafetyLevel.LOW -> Color(0xFF388E3C) to R.string.safety_low
+        SafetyLevel.CRITICAL -> SafetyCritical to R.string.safety_critical
+        SafetyLevel.HIGH -> SafetyHigh to R.string.safety_high
+        SafetyLevel.MEDIUM -> SafetyMedium to R.string.safety_medium
+        SafetyLevel.LOW -> SafetyLow to R.string.safety_low
     }
     val text = stringResource(textResId)
     val cdText = stringResource(R.string.cd_safety_badge)

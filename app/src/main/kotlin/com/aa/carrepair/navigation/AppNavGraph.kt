@@ -2,8 +2,8 @@ package com.aa.carrepair.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,7 +26,9 @@ import com.aa.carrepair.feature.estimator.ServiceCategoryScreen
 import com.aa.carrepair.feature.estimator.VehicleIdScreen
 import com.aa.carrepair.feature.fleet.FleetScreen
 import com.aa.carrepair.feature.inspection.InspectionScreen
+import com.aa.carrepair.feature.profile.ProfileScreen
 import com.aa.carrepair.feature.settings.SettingsScreen
+import com.aa.carrepair.feature.analytics.AnalyticsScreen
 import com.aa.carrepair.feature.voice.VoiceScreen
 import com.aa.carrepair.ui.components.BottomNavBar
 import com.aa.carrepair.feature.home.HomeScreen
@@ -46,6 +48,7 @@ private val BOTTOM_NAV_ROUTES = setOf(
 fun AppNavGraph(
     startDestination: String = Screen.Home.route,
     deepLinkVin: String? = null,
+    onSaveUserProfile: (displayName: String, email: String, provider: String) -> Unit = { _, _, _ -> },
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -57,20 +60,11 @@ fun AppNavGraph(
     val showBottomBar = currentRoute in BOTTOM_NAV_ROUTES ||
         BOTTOM_NAV_ROUTES.any { currentRoute?.startsWith(it.substringBefore("{")) == true }
 
-    Scaffold(
-        bottomBar = {
-            if (showBottomBar) {
-                BottomNavBar(
-                    navController = navController,
-                    currentRoute = currentRoute
-                )
-            }
-        }
-    ) { paddingValues ->
+    Column(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
             startDestination = resolvedStart,
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.weight(1f),
             enterTransition = {
                 slideIntoContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -99,6 +93,9 @@ fun AppNavGraph(
             // ── Onboarding ──────────────────────────────────────────────────
             composable(Screen.SignIn.route) {
                 SignInScreen(
+                    onSignIn = { displayName, email, provider ->
+                        onSaveUserProfile(displayName, email, provider)
+                    },
                     onGetStarted = {
                         navController.navigate(Screen.PersonaSelection.route) {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
@@ -144,6 +141,9 @@ fun AppNavGraph(
                     },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(Screen.Profile.route)
                     }
                 )
             }
@@ -155,7 +155,8 @@ fun AppNavGraph(
                 val sessionId = backStackEntry.arguments?.getString("sessionId") ?: "new"
                 ChatScreen(
                     sessionId = sessionId,
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                    onVoiceInput = { navController.navigate(Screen.VoiceAssistant.route) }
                 )
             }
 
@@ -248,6 +249,12 @@ fun AppNavGraph(
                 )
             }
 
+            composable(Screen.Analytics.route) {
+                AnalyticsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.Settings.route) {
                 SettingsScreen(
                     onNavigateBack = { navController.popBackStack() },
@@ -255,9 +262,39 @@ fun AppNavGraph(
                         navController.navigate(Screen.PersonaSelection.route) {
                             popUpTo(Screen.Home.route) { inclusive = false }
                         }
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(Screen.Profile.route)
+                    },
+                    onSignOut = {
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
                 )
             }
+
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToSettings = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Settings.route)
+                    },
+                    onSignOut = {
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+
+        if (showBottomBar) {
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute
+            )
         }
     }
 }

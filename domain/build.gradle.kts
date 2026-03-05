@@ -18,6 +18,7 @@ android {
 dependencies {
     api(project(":core"))
     implementation(libs.coroutines.core)
+    implementation(libs.javax.inject)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

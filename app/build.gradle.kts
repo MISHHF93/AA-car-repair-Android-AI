@@ -96,6 +96,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":analytics"))
     implementation(project(":sync"))
+    implementation(project(":ui"))
     implementation(project(":feature:chat"))
     implementation(project(":feature:estimator"))
     implementation(project(":feature:dtc"))
@@ -108,6 +109,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.android.material)
 
     // Compose
     implementation(platform(libs.compose.bom))

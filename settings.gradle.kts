@@ -22,6 +22,7 @@ include(
     ":data",
     ":analytics",
     ":sync",
+    ":ui",
     ":feature:chat",
     ":feature:estimator",
     ":feature:dtc",

@@ -2,6 +2,7 @@ package com.aa.carrepair.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aa.carrepair.core.preferences.UserPreferencesManager
 import com.aa.carrepair.domain.model.UserPersona
 import com.aa.carrepair.domain.repository.VehicleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +17,14 @@ import javax.inject.Inject
 data class HomeUiState(
     val persona: UserPersona = UserPersona.DIY_OWNER,
     val recentVehicleCount: Int = 0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val userDisplayName: String? = null
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val userPreferencesManager: UserPreferencesManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -31,6 +34,19 @@ class HomeViewModel @Inject constructor(
         vehicleRepository.getVehicles()
             .onEach { vehicles ->
                 _uiState.update { it.copy(recentVehicleCount = vehicles.size) }
+            }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.userDisplayName
+            .onEach { name -> _uiState.update { it.copy(userDisplayName = name) } }
+            .launchIn(viewModelScope)
+
+        userPreferencesManager.selectedPersonaName
+            .onEach { name ->
+                val persona = name?.let {
+                    try { UserPersona.valueOf(it) } catch (_: IllegalArgumentException) { null }
+                } ?: UserPersona.DIY_OWNER
+                _uiState.update { it.copy(persona = persona) }
             }
             .launchIn(viewModelScope)
     }

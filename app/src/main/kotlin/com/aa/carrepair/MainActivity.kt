@@ -10,18 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import com.aa.carrepair.core.preferences.UserPreferencesManager
 import com.aa.carrepair.navigation.AppNavGraph
 import com.aa.carrepair.ui.theme.AACarRepairTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val appViewModel: AppViewModel by viewModels()
+
+    @Inject
+    lateinit var userPreferencesManager: UserPreferencesManager
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -35,7 +42,6 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        // Keep the splash screen visible until the start destination is determined from DataStore.
         splashScreen.setKeepOnScreenCondition {
             appViewModel.startDestination.value == null
         }
@@ -47,13 +53,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             AACarRepairTheme {
                 val startDestination by appViewModel.startDestination.collectAsState()
+                val scope = rememberCoroutineScope()
 
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    // Only render the nav graph once we know where to start (avoids a flash).
                     startDestination?.let { dest ->
                         AppNavGraph(
                             startDestination = dest,
-                            deepLinkVin = intent?.data?.host
+                            deepLinkVin = intent?.data?.host,
+                            onSaveUserProfile = { displayName, email, provider ->
+                                scope.launch {
+                                    userPreferencesManager.saveUserProfile(displayName, email, provider)
+                                }
+                            }
                         )
                     }
                 }

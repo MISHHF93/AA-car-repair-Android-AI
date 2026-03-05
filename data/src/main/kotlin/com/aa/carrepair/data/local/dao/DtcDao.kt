@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DtcDao {
-    @Query("SELECT * FROM dtc_codes_fts WHERE dtc_codes_fts MATCH :query LIMIT 50")
+    @Query("SELECT rowid, * FROM dtc_codes_fts WHERE dtc_codes_fts MATCH :query LIMIT 50")
     fun search(query: String): Flow<List<DtcEntity>>
 
-    @Query("SELECT * FROM dtc_codes_fts WHERE code = :code LIMIT 1")
+    @Query("SELECT rowid, * FROM dtc_codes_fts WHERE code = :code LIMIT 1")
     suspend fun getByCode(code: String): DtcEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

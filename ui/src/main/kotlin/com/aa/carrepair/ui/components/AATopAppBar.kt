@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import com.aa.carrepair.R
+import com.aa.carrepair.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

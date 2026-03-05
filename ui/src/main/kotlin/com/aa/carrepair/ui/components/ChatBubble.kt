@@ -41,8 +41,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aa.carrepair.R
 import com.aa.carrepair.domain.model.MessageRole
+import com.aa.carrepair.ui.R
 import com.aa.carrepair.ui.theme.AAAmber
 import com.aa.carrepair.ui.theme.AANavy
 import com.aa.carrepair.ui.theme.SafetyLow
@@ -197,7 +197,6 @@ private fun BubbleFooter(
                 ConfidenceBadge(confidence = confidence)
                 Spacer(modifier = Modifier.width(6.dp))
             }
-            // Copy action
             IconButton(
                 onClick = { clipboard.setText(AnnotatedString(content)) },
                 modifier = Modifier.size(22.dp)
@@ -209,7 +208,6 @@ private fun BubbleFooter(
                     modifier = Modifier.size(14.dp)
                 )
             }
-            // Thumbs up
             IconButton(
                 onClick = { thumbState = true },
                 modifier = Modifier.size(22.dp)
@@ -225,7 +223,6 @@ private fun BubbleFooter(
                     modifier = Modifier.size(14.dp)
                 )
             }
-            // Thumbs down
             IconButton(
                 onClick = { thumbState = false },
                 modifier = Modifier.size(22.dp)

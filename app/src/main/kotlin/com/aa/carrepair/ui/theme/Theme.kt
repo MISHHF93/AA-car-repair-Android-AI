@@ -8,15 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
-// ── Brand palette ──────────────────────────────────────────────────────────────
-val AANavy = Color(0xFF003087)
-val AANavyDark = Color(0xFF00194A)
-val AAAmber = Color(0xFFFFD700)
-val SafetyCritical = Color(0xFFD32F2F)
-val SafetyHigh = Color(0xFFF57C00)
-val SafetyMedium = Color(0xFFFBC02D)
-val SafetyLow = Color(0xFF388E3C)
-
 // ── Chat surface tones ─────────────────────────────────────────────────────────
 /** Slightly warm off-white for the chat list background in light mode. */
 val ChatSurfaceLight = Color(0xFFF4F6FB)

@@ -29,7 +29,7 @@ data class CalculatorInfo(
     val description: String
 )
 
-private val CALCULATORS = listOf(
+internal val CALCULATORS = listOf(
     CalculatorInfo(CalculatorType.LABOR_TIME, "Labor Time", "Calculate labor costs"),
     CalculatorInfo(CalculatorType.PARTS_MARKUP, "Parts Markup", "Price parts with markup"),
     CalculatorInfo(CalculatorType.REPAIR_REPLACE, "Repair vs Replace", "Should you fix or replace?"),

@@ -56,6 +56,29 @@
     <string name="sign_in_tagline">Your AI-powered automotive assistant for repair estimates, DTC analysis, and expert guidance.</string>
     <string name="sign_in_get_started">Get Started</string>
     <string name="sign_in_disclaimer">By continuing you agree to our Terms of Service and Privacy Policy.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_email">Sign in with Email</string>
+    <string name="sign_in_or">OR</string>
+    <string name="sign_in_continue_guest">Continue as Guest</string>
+    <string name="sign_in_email_label">Email</string>
+    <string name="sign_in_email_hint">you@example.com</string>
+    <string name="sign_in_password_label">Password</string>
+    <string name="sign_in_toggle_password">Toggle password visibility</string>
+    <string name="sign_in_forgot_password">Forgot password?</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_in_back_to_options">← Back to sign-in options</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Your Profile</string>
+    <string name="profile_guest">Guest</string>
+    <string name="profile_guest_email">Not signed in</string>
+    <string name="profile_edit">Edit Profile</string>
+    <string name="profile_display_name">Display Name</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_auth_provider">Signed in with</string>
+    <string name="profile_sign_out">Sign Out</string>
+    <string name="profile_sign_out_confirm">Are you sure you want to sign out? You will need to sign in again to access your data.</string>
+    <string name="profile_member_since">Member since</string>
 
     <!-- Settings Profile -->
     <string name="settings_current_profile">Current Profile</string>

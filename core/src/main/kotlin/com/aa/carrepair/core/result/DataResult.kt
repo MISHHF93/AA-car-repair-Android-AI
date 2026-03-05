@@ -37,6 +37,21 @@ sealed class DataResult<out T> {
 suspend fun <T> safeApiCall(block: suspend () -> T): DataResult<T> =
     try {
         DataResult.Success(block())
+    } catch (e: java.io.IOException) {
+        DataResult.Error(e, "Network error. Please check your internet connection.")
     } catch (e: Exception) {
-        DataResult.Error(e, e.message)
+        val httpCode = try {
+            e.javaClass.getMethod("code").invoke(e) as? Int
+        } catch (_: Exception) { null }
+
+        val errorMsg = when (httpCode) {
+            502 -> "Server is temporarily unavailable (502). Please try again later."
+            503 -> "Service is under maintenance (503). Please try again later."
+            504 -> "Server timed out (504). Please check your connection."
+            in 500..599 -> "Server error ($httpCode). Please try again later."
+            401, 403 -> "Authentication failed ($httpCode). Please check your API key."
+            null -> e.message
+            else -> "Request failed with code $httpCode"
+        }
+        DataResult.Error(e, errorMsg)
     }
