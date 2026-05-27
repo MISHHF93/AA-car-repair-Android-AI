@@ -5,47 +5,26 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class AgentChatRequest(
-    @Json(name = "session_id") val sessionId: String,
-    @Json(name = "message") val message: String,
-    @Json(name = "agent_type") val agentType: String? = null,
-    @Json(name = "persona") val persona: String? = null,
-    @Json(name = "context") val context: List<MessageContext> = emptyList(),
-    @Json(name = "vehicle_vin") val vehicleVin: String? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class MessageContext(
-    @Json(name = "role") val role: String,
-    @Json(name = "content") val content: String
+    @Json(name = "request_id") val requestId: String,
+    @Json(name = "timestamp_utc") val timestampUtc: String,
+    @Json(name = "surface") val surface: String,
+    @Json(name = "user_role") val userRole: String,
+    @Json(name = "locale") val locale: String,
+    @Json(name = "query_text") val queryText: String,
+    @Json(name = "policy_profile") val policyProfile: String,
+    @Json(name = "privacy_mode") val privacyMode: String
 )
 
 @JsonClass(generateAdapter = true)
 data class AgentChatResponse(
-    @Json(name = "session_id") val sessionId: String,
-    @Json(name = "message_id") val messageId: String,
-    @Json(name = "content") val content: String,
-    @Json(name = "agent_type") val agentType: String,
+    @Json(name = "response_id") val responseId: String,
+    @Json(name = "request_id") val requestId: String,
+    @Json(name = "surface") val surface: String,
+    @Json(name = "answer_text") val answerText: String,
+    @Json(name = "answer_format") val answerFormat: String,
     @Json(name = "confidence") val confidence: Int,
-    @Json(name = "safety_level") val safetyLevel: String?,
-    @Json(name = "suggested_actions") val suggestedActions: List<String> = emptyList(),
-    @Json(name = "metadata") val metadata: Map<String, String> = emptyMap()
-)
-
-@JsonClass(generateAdapter = true)
-data class AgentDiagnoseRequest(
-    @Json(name = "symptoms") val symptoms: List<String>,
-    @Json(name = "dtc_codes") val dtcCodes: List<String> = emptyList(),
-    @Json(name = "vehicle_vin") val vehicleVin: String? = null,
-    @Json(name = "mileage") val mileage: Int? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class AgentDiagnoseResponse(
-    @Json(name = "diagnosis") val diagnosis: String,
-    @Json(name = "confidence") val confidence: Int,
-    @Json(name = "possible_causes") val possibleCauses: List<String>,
-    @Json(name = "recommended_repairs") val recommendedRepairs: List<String>,
     @Json(name = "safety_level") val safetyLevel: String,
-    @Json(name = "estimated_cost_min") val estimatedCostMin: Double,
-    @Json(name = "estimated_cost_max") val estimatedCostMax: Double
+    @Json(name = "citations") val citations: List<String> = emptyList(),
+    @Json(name = "next_actions") val nextActions: List<String> = emptyList(),
+    @Json(name = "audit_trace_id") val auditTraceId: String
 )
