@@ -1,52 +1,102 @@
 import './styles.css'
 
-const features = [
-  {
-    title: 'AI Chat',
-    description: 'Multi-agent diagnosis, estimation, and safety guidance tailored for automotive workflows.'
-  },
-  {
-    title: 'Repair Estimator',
-    description: 'Structured 4-step estimate flow with VIN decode and itemized recommendations.'
-  },
-  {
-    title: 'DTC Lookup',
-    description: 'Search and analyze trouble codes with likely causes and confidence guidance.'
-  },
-  {
-    title: 'Fleet Dashboard',
-    description: 'Track vehicle costs, maintenance trends, and fleet-level efficiency.'
-  }
-]
+const app = document.querySelector('#app')
 
-const root = document.querySelector('#app')
-
-root.innerHTML = `
-  <div class="page">
-    <header class="hero">
+app.innerHTML = `
+  <main class="chat-page">
+    <header class="chat-header">
       <p class="eyebrow">AA Car Repair Android AI</p>
-      <h1>Production Android frontend, now properly wired.</h1>
-      <p class="subtitle">
-        This site is now connected to the actual frontend entry point and mirrors the real product capabilities
-        from the Android application.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="./README.md">View project docs</a>
-        <a class="btn" href="./ARCHITECTURE.md">Architecture</a>
-      </div>
+      <h1>AI Chatbot</h1>
     </header>
 
-    <section>
-      <h2>Core frontend experiences</h2>
-      <div class="grid" id="feature-grid"></div>
+    <section class="chat-layout">
+      <div id="message-list" class="message-list" aria-live="polite"></div>
+
+      <form id="composer" class="composer">
+        <label class="composer-label" for="chat-input">Ask a diagnostic question</label>
+        <div class="composer-row">
+          <input id="chat-input" name="query" type="text" placeholder="Type a DTC like P0171" autocomplete="off" required />
+          <button id="send-button" type="submit">Send</button>
+        </div>
+        <p id="status" class="status"></p>
+      </form>
     </section>
-  </div>
+  </main>
 `
 
-const grid = document.querySelector('#feature-grid')
-features.forEach((feature) => {
-  const card = document.createElement('article')
-  card.className = 'card'
-  card.innerHTML = `<h3>${feature.title}</h3><p>${feature.description}</p>`
-  grid.appendChild(card)
+const messageList = document.querySelector('#message-list')
+const composer = document.querySelector('#composer')
+const input = document.querySelector('#chat-input')
+const status = document.querySelector('#status')
+const sendButton = document.querySelector('#send-button')
+
+const addMessage = (role, content, meta = '') => {
+  const row = document.createElement('article')
+  row.className = `message message-${role}`
+  row.innerHTML = `
+    <p class="message-role">${role === 'user' ? 'You' : 'Assistant'}</p>
+    <p class="message-body"></p>
+    ${meta ? `<p class="message-meta">${meta}</p>` : ''}
+  `
+  row.querySelector('.message-body').textContent = content
+  messageList.appendChild(row)
+  messageList.scrollTop = messageList.scrollHeight
+}
+
+const buildRequest = (queryText) => ({
+  request_id: crypto.randomUUID(),
+  timestamp_utc: new Date().toISOString(),
+  surface: 'mobile',
+  user_role: 'consumer',
+  locale: 'en-CA',
+  query_text: queryText,
+  policy_profile: 'mobile_default',
+  privacy_mode: 'standard'
 })
+
+const sendChatRequest = async (payload) => {
+  const response = await fetch('/v1/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+
+  if (!response.ok) {
+    throw new Error(`Chat request failed with status ${response.status}`)
+  }
+
+  return response.json()
+}
+
+composer.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  const queryText = input.value.trim()
+  if (!queryText) return
+
+  const payload = buildRequest(queryText)
+  addMessage('user', queryText)
+
+  input.value = ''
+  input.focus()
+  status.textContent = 'Thinking...'
+  status.className = 'status status-loading'
+  sendButton.disabled = true
+
+  try {
+    const data = await sendChatRequest(payload)
+    const meta = `confidence: ${data.confidence} • safety: ${data.safety_level} • trace: ${data.audit_trace_id}`
+    addMessage('assistant', data.answer_text, meta)
+    if (Array.isArray(data.citations) && data.citations.length > 0) {
+      addMessage('assistant', `Citations: ${data.citations.join(' | ')}`)
+    }
+    status.textContent = ''
+    status.className = 'status'
+  } catch (error) {
+    status.textContent = error.message
+    status.className = 'status status-error'
+  } finally {
+    sendButton.disabled = false
+  }
+})
+
+addMessage('assistant', 'Ask about a code (example: P0171) or a repair symptom to get started.')
