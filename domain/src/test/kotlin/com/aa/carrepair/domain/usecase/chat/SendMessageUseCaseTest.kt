@@ -31,7 +31,7 @@ class SendMessageUseCaseTest {
             confidence = 85,
             safetyAssessment = null
         )
-        coEvery { chatRepository.sendMessage(any(), any(), any()) } returns DataResult.Success(expectedResponse)
+        coEvery { chatRepository.sendMessage(any(), any(), any(), any()) } returns DataResult.Success(expectedResponse)
         coEvery { chatRepository.saveMessage(any()) } returns DataResult.Success(Unit)
 
         val result = useCase("session_1", "My brakes are squeaking")
@@ -39,13 +39,13 @@ class SendMessageUseCaseTest {
         assertTrue(result is DataResult.Success)
         assertEquals(expectedResponse, (result as DataResult.Success).data)
         coVerify { chatRepository.saveMessage(any()) }
-        coVerify { chatRepository.sendMessage("session_1", "My brakes are squeaking", null) }
+        coVerify { chatRepository.sendMessage("session_1", "My brakes are squeaking", null, null) }
     }
 
     @Test
     fun `invoke propagates error from repository`() = runTest {
         coEvery { chatRepository.saveMessage(any()) } returns DataResult.Success(Unit)
-        coEvery { chatRepository.sendMessage(any(), any(), any()) } returns
+        coEvery { chatRepository.sendMessage(any(), any(), any(), any()) } returns
             DataResult.Error(RuntimeException("Network error"))
 
         val result = useCase("session_1", "Hello")

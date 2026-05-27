@@ -4,6 +4,8 @@ import com.aa.carrepair.core.result.DataResult
 import com.aa.carrepair.domain.model.AgentResponse
 import com.aa.carrepair.domain.model.ChatMessage
 import com.aa.carrepair.domain.model.MessageRole
+import com.aa.carrepair.domain.model.ObdContext
+import com.aa.carrepair.domain.model.VehicleContext
 import com.aa.carrepair.domain.repository.ChatRepository
 import java.time.Instant
 import java.util.UUID
@@ -15,7 +17,8 @@ class SendMessageUseCase @Inject constructor(
     suspend operator fun invoke(
         sessionId: String,
         userMessage: String,
-        vehicleVin: String? = null
+        vehicleContext: VehicleContext? = null,
+        obdContext: ObdContext? = null
     ): DataResult<AgentResponse> {
         val userMsg = ChatMessage(
             id = UUID.randomUUID().toString(),
@@ -25,6 +28,6 @@ class SendMessageUseCase @Inject constructor(
             timestamp = Instant.now()
         )
         chatRepository.saveMessage(userMsg)
-        return chatRepository.sendMessage(sessionId, userMessage, vehicleVin)
+        return chatRepository.sendMessage(sessionId, userMessage, vehicleContext, obdContext)
     }
 }

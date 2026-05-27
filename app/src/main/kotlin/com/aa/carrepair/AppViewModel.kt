@@ -13,5 +13,5 @@ import javax.inject.Inject
 @HiltViewModel
 class AppViewModel @Inject constructor() : ViewModel() {
 
-    val startDestination: StateFlow<String?> = MutableStateFlow(Screen.Chat().route)
+    val startDestination: StateFlow<String?> = MutableStateFlow(Screen.Root.route)
 }

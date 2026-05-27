@@ -71,7 +71,20 @@ class ContractModelsTest {
             locale = "en-CA",
             queryText = "P0171",
             policyProfile = "mobile_default",
-            privacyMode = "standard"
+            privacyMode = "standard",
+            vehicleContext = VehicleContextDto(
+                vin = "1HGCM82633A004352",
+                year = 2020,
+                make = "Honda",
+                model = "Accord",
+                mileageKm = 55000
+            ),
+            obdContext = ObdContextDto(
+                dtcCodes = listOf("P0300"),
+                pendingCodes = listOf("P0171"),
+                freezeFrame = mapOf("summary" to "Freeze-frame not connected yet"),
+                livePids = mapOf("summary" to "Live PID stream not connected yet")
+            )
         )
 
         assertEquals("req-1", request.requestId)
@@ -81,6 +94,12 @@ class ContractModelsTest {
         assertEquals("P0171", request.queryText)
         assertEquals("mobile_default", request.policyProfile)
         assertEquals("standard", request.privacyMode)
+        assertEquals("1HGCM82633A004352", request.vehicleContext?.vin)
+        assertEquals(2020, request.vehicleContext?.year)
+        assertEquals(55000, request.vehicleContext?.mileageKm)
+        assertEquals(listOf("P0300"), request.obdContext?.dtcCodes)
+        assertEquals(listOf("P0171"), request.obdContext?.pendingCodes)
+        assertEquals("Live PID stream not connected yet", request.obdContext?.livePids?.get("summary"))
     }
 
     @Test
@@ -99,6 +118,83 @@ class ContractModelsTest {
         assertEquals(1, response.citations.size)
         assertEquals("audit-1", response.auditTraceId)
         assertEquals("mobile", response.surface)
+    }
+
+    @Test
+    fun `AgentChatResponse can carry troubleshooting tree`() {
+        val response = AgentChatResponse(
+            responseType = "troubleshooting_tree",
+            answerText = "Follow this troubleshooting tree.",
+            confidence = 82,
+            safetyLevel = "MEDIUM",
+            troubleshootingTree = TroubleshootingTreeDto(
+                symptomNode = SymptomNodeDto(
+                    title = "Brake pedal vibration",
+                    description = "Vibration while slowing down"
+                ),
+                testNodes = listOf(
+                    TestNodeDto(
+                        id = "test-1",
+                        title = "Check when vibration appears",
+                        instructions = "Drive only in a safe area.",
+                        outcomeBranches = listOf(
+                            OutcomeBranchDto(
+                                outcome = "Vibration appears only during braking",
+                                fixNode = FixNodeDto(
+                                    title = "Inspect brake rotors",
+                                    details = "Measure runout and pad wear.",
+                                    priority = "high"
+                                ),
+                                completionCriteria = listOf("No vibration during safe braking test")
+                            )
+                        )
+                    )
+                ),
+                completionCriteria = listOf("Symptom is resolved")
+            ),
+            auditTraceId = "audit-tree-1"
+        )
+
+        val tree = requireNotNull(response.troubleshootingTree)
+
+        assertEquals("troubleshooting_tree", response.responseType)
+        assertEquals("Brake pedal vibration", tree.symptomNode.title)
+        assertEquals(1, tree.testNodes.size)
+        assertEquals("Inspect brake rotors", tree.testNodes[0].outcomeBranches[0].fixNode.title)
+        assertEquals("Symptom is resolved", tree.completionCriteria[0])
+    }
+
+    @Test
+    fun `AgentChatResponse can carry diagnostic report`() {
+        val response = AgentChatResponse(
+            responseType = "diagnostic_report",
+            answerText = "The misfire should be diagnosed before replacing parts.",
+            confidence = 84,
+            safetyLevel = "MEDIUM",
+            citations = listOf("AA-DTC-P0300"),
+            diagnosisCandidates = listOf("Ignition issue", "Vacuum leak"),
+            recommendedTests = listOf("Scan current and pending DTCs", "Inspect intake vacuum leaks"),
+            partsAndTools = listOf("OBD-II scanner"),
+            estimatedTime = "30-60 minutes",
+            riskFlags = listOf("misfire"),
+            diagnosticReport = DiagnosticReportDto(
+                vehicleSummary = "2020 Honda Accord, 55000 km",
+                symptoms = listOf("Rough idle", "Check engine light"),
+                dtcCodes = listOf("P0300", "P0171"),
+                diagnosticSummary = "Random misfire with lean condition may indicate intake leak or ignition issue.",
+                recommendedTests = listOf("Scan current and pending DTCs", "Inspect intake vacuum leaks")
+            ),
+            auditTraceId = "audit-report-1"
+        )
+
+        val report = requireNotNull(response.diagnosticReport)
+
+        assertEquals("diagnostic_report", response.responseType)
+        assertEquals("2020 Honda Accord, 55000 km", report.vehicleSummary)
+        assertEquals(listOf("P0300", "P0171"), report.dtcCodes)
+        assertEquals("Ignition issue", response.diagnosisCandidates[0])
+        assertEquals("OBD-II scanner", response.partsAndTools[0])
+        assertEquals("Inspect intake vacuum leaks", report.recommendedTests[1])
     }
 
     @Test

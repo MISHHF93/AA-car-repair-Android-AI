@@ -40,11 +40,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,9 +59,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aa.carrepair.domain.model.MessageRole
 import com.aa.carrepair.feature.chat.R
@@ -116,6 +120,24 @@ fun ChatScreen(
                 .padding(paddingValues)
                 .imePadding()
         ) {
+            VehicleContextPanel(
+                uiState = uiState,
+                onExpandedChanged = viewModel::onVehicleContextExpandedChanged,
+                onVinChanged = viewModel::onVehicleVinChanged,
+                onYearChanged = viewModel::onVehicleYearChanged,
+                onMakeChanged = viewModel::onVehicleMakeChanged,
+                onModelChanged = viewModel::onVehicleModelChanged,
+                onMileageChanged = viewModel::onVehicleMileageChanged
+            )
+            ObdContextPanel(
+                uiState = uiState,
+                onExpandedChanged = viewModel::onObdContextExpandedChanged,
+                onDtcCodeChanged = viewModel::onObdDtcCodeChanged,
+                onPendingCodesChanged = viewModel::onObdPendingCodesChanged,
+                onFreezeFrameSummaryChanged = viewModel::onObdFreezeFrameSummaryChanged,
+                onLivePidSummaryChanged = viewModel::onObdLivePidSummaryChanged
+            )
+
             // ── Message list ────────────────────────────────────────────────────
             LazyColumn(
                 state = listState,
@@ -141,7 +163,8 @@ fun ChatScreen(
                         content = message.content,
                         role = message.role,
                         timestamp = message.timestamp,
-                        confidence = message.confidence
+                        confidence = message.confidence,
+                        safetyLevel = message.safetyLevel
                     )
                 }
 
@@ -196,6 +219,238 @@ private fun AgentChip(agentLabel: String) {
             fontWeight = FontWeight.SemiBold
         )
     }
+}
+
+@Composable
+private fun VehicleContextPanel(
+    uiState: ChatUiState,
+    onExpandedChanged: (Boolean) -> Unit,
+    onVinChanged: (String) -> Unit,
+    onYearChanged: (String) -> Unit,
+    onMakeChanged: (String) -> Unit,
+    onModelChanged: (String) -> Unit,
+    onMileageChanged: (String) -> Unit
+) {
+    val hasVehicleContext = uiState.vehicleContextOrNull() != null
+    val summary = buildVehicleSummary(uiState)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Vehicle profile",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = summary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (hasVehicleContext) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                }
+                TextButton(onClick = { onExpandedChanged(!uiState.isVehicleContextExpanded) }) {
+                    Text(if (uiState.isVehicleContextExpanded) "Hide" else "Edit")
+                }
+            }
+
+            AnimatedVisibility(visible = uiState.isVehicleContextExpanded) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedTextField(
+                        value = uiState.vehicleVin,
+                        onValueChange = onVinChanged,
+                        label = { Text("VIN") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        OutlinedTextField(
+                            value = uiState.vehicleYear,
+                            onValueChange = onYearChanged,
+                            label = { Text("Year") },
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true
+                        )
+                        OutlinedTextField(
+                            value = uiState.vehicleMileage,
+                            onValueChange = onMileageChanged,
+                            label = { Text("Mileage km") },
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true
+                        )
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        OutlinedTextField(
+                            value = uiState.vehicleMake,
+                            onValueChange = onMakeChanged,
+                            label = { Text("Make") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
+                        )
+                        OutlinedTextField(
+                            value = uiState.vehicleModel,
+                            onValueChange = onModelChanged,
+                            label = { Text("Model") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
+                        )
+                    }
+                    Text(
+                        text = "Optional. VIN is used only as context here; paid VIN decoding is not enabled.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun buildVehicleSummary(uiState: ChatUiState): String {
+    val yearMakeModel = listOf(uiState.vehicleYear, uiState.vehicleMake, uiState.vehicleModel)
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+        .joinToString(" ")
+    val mileage = uiState.vehicleMileage.trim().takeIf { it.isNotBlank() }?.let { "$it km" }
+    val vin = uiState.vehicleVin.trim().takeIf { it.isNotBlank() }?.let { "VIN $it" }
+
+    return listOf(yearMakeModel, mileage, vin)
+        .filterNotNull()
+        .filter { it.isNotBlank() }
+        .joinToString(" • ")
+        .ifBlank { "Optional context for better repair answers" }
+}
+
+@Composable
+private fun ObdContextPanel(
+    uiState: ChatUiState,
+    onExpandedChanged: (Boolean) -> Unit,
+    onDtcCodeChanged: (String) -> Unit,
+    onPendingCodesChanged: (String) -> Unit,
+    onFreezeFrameSummaryChanged: (String) -> Unit,
+    onLivePidSummaryChanged: (String) -> Unit
+) {
+    val hasObdContext = uiState.obdContextOrNull() != null
+    val summary = buildObdSummary(uiState)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 8.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "OBD context",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = summary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (hasObdContext) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                }
+                TextButton(onClick = { onExpandedChanged(!uiState.isObdContextExpanded) }) {
+                    Text(if (uiState.isObdContextExpanded) "Hide" else "Edit")
+                }
+            }
+
+            AnimatedVisibility(visible = uiState.isObdContextExpanded) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedTextField(
+                        value = uiState.obdDtcCode,
+                        onValueChange = onDtcCodeChanged,
+                        label = { Text("DTC codes") },
+                        placeholder = { Text("P0300, P0171") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = uiState.obdPendingCodes,
+                        onValueChange = onPendingCodesChanged,
+                        label = { Text("Pending codes") },
+                        placeholder = { Text("P0171, P0420") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = uiState.obdFreezeFrameSummary,
+                        onValueChange = onFreezeFrameSummaryChanged,
+                        label = { Text("Freeze-frame placeholder") },
+                        placeholder = { Text("No freeze-frame captured yet") },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 2
+                    )
+                    OutlinedTextField(
+                        value = uiState.obdLivePidSummary,
+                        onValueChange = onLivePidSummaryChanged,
+                        label = { Text("Live PID placeholder") },
+                        placeholder = { Text("No live PID stream connected yet") },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 2
+                    )
+                    Text(
+                        text = "OBD fields are manual placeholders only. Bluetooth, live scan, freeze-frame capture, and code clearing are not enabled.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun buildObdSummary(uiState: ChatUiState): String {
+    val dtc = uiState.obdDtcCode.trim().takeIf { it.isNotBlank() }?.let { "DTC $it" }
+    val pending = uiState.obdPendingCodes.trim().takeIf { it.isNotBlank() }?.let { "Pending $it" }
+    val freezeFrame = uiState.obdFreezeFrameSummary.trim().takeIf { it.isNotBlank() }?.let { "Freeze-frame note" }
+    val livePid = uiState.obdLivePidSummary.trim().takeIf { it.isNotBlank() }?.let { "Live PID note" }
+
+    return listOf(dtc, pending, freezeFrame, livePid)
+        .filterNotNull()
+        .joinToString(" • ")
+        .ifBlank { "Optional manual OBD context, no Bluetooth connected" }
 }
 
 // ── Empty state with AA branding and quick prompts ─────────────────────────────

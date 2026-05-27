@@ -37,6 +37,7 @@ private const val NAV_ANIMATION_DURATION = 300
 
 /** Routes where the bottom navigation bar should be visible. */
 private val BOTTOM_NAV_ROUTES = setOf(
+    Screen.Root.route,
     Screen.Home.route,
     Screen.Chat("").route,
     Screen.EstimatorVehicle.route,
@@ -90,6 +91,14 @@ fun AppNavGraph(
                 )
             }
         ) {
+            composable(Screen.Root.route) {
+                ChatScreen(
+                    sessionId = "new",
+                    onNavigateBack = { navController.popBackStack() },
+                    onVoiceInput = { navController.navigate(Screen.VoiceAssistant.route) }
+                )
+            }
+
             // ── Onboarding ──────────────────────────────────────────────────
             composable(Screen.SignIn.route) {
                 SignInScreen(

@@ -7,6 +7,8 @@ import com.aa.carrepair.domain.model.AgentResponse
 import com.aa.carrepair.domain.model.AgentType
 import com.aa.carrepair.domain.model.ChatMessage
 import com.aa.carrepair.domain.model.MessageRole
+import com.aa.carrepair.domain.model.ObdContext
+import com.aa.carrepair.domain.model.VehicleContext
 import com.aa.carrepair.domain.usecase.chat.GetChatHistoryUseCase
 import com.aa.carrepair.domain.usecase.chat.SendMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,15 +51,66 @@ class ChatViewModel @Inject constructor(
         _uiState.update { it.copy(inputText = text) }
     }
 
-    fun sendMessage(vehicleVin: String? = null) {
+    fun onVehicleContextExpandedChanged(expanded: Boolean) {
+        _uiState.update { it.copy(isVehicleContextExpanded = expanded) }
+    }
+
+    fun onVehicleVinChanged(vin: String) {
+        _uiState.update { it.copy(vehicleVin = vin.uppercase()) }
+    }
+
+    fun onVehicleYearChanged(year: String) {
+        _uiState.update { it.copy(vehicleYear = year.filter(Char::isDigit).take(4)) }
+    }
+
+    fun onVehicleMakeChanged(make: String) {
+        _uiState.update { it.copy(vehicleMake = make) }
+    }
+
+    fun onVehicleModelChanged(model: String) {
+        _uiState.update { it.copy(vehicleModel = model) }
+    }
+
+    fun onVehicleMileageChanged(mileage: String) {
+        _uiState.update { it.copy(vehicleMileage = mileage.filter(Char::isDigit).take(7)) }
+    }
+
+    fun onObdContextExpandedChanged(expanded: Boolean) {
+        _uiState.update { it.copy(isObdContextExpanded = expanded) }
+    }
+
+    fun onObdDtcCodeChanged(code: String) {
+        _uiState.update {
+            it.copy(obdDtcCode = code.uppercase().filter { char -> char.isLetterOrDigit() || char == ',' || char.isWhitespace() })
+        }
+    }
+
+    fun onObdPendingCodesChanged(codes: String) {
+        _uiState.update { it.copy(obdPendingCodes = codes.uppercase()) }
+    }
+
+    fun onObdFreezeFrameSummaryChanged(summary: String) {
+        _uiState.update { it.copy(obdFreezeFrameSummary = summary) }
+    }
+
+    fun onObdLivePidSummaryChanged(summary: String) {
+        _uiState.update { it.copy(obdLivePidSummary = summary) }
+    }
+
+    fun sendMessage(
+        vehicleContextOverride: VehicleContext? = null,
+        obdContextOverride: ObdContext? = null
+    ) {
         val text = _uiState.value.inputText.trim()
         if (text.isBlank()) return
         val sessionId = _uiState.value.sessionId
+        val vehicleContext = vehicleContextOverride ?: _uiState.value.vehicleContextOrNull()
+        val obdContext = obdContextOverride ?: _uiState.value.obdContextOrNull()
 
         _uiState.update { it.copy(inputText = "", isTyping = true, error = null) }
 
         viewModelScope.launch {
-            when (val result = sendMessageUseCase(sessionId, text, vehicleVin)) {
+            when (val result = sendMessageUseCase(sessionId, text, vehicleContext, obdContext)) {
                 is DataResult.Success -> {
                     val response = result.data
                     _uiState.update { state ->

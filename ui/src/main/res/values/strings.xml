@@ -18,6 +18,7 @@
 
     <!-- Safety levels -->
     <string name="safety_critical">CRITICAL — Do not drive</string>
+    <string name="safety_restricted">RESTRICTED — Professional help required</string>
     <string name="safety_high">HIGH — Get repaired soon</string>
     <string name="safety_medium">MEDIUM — Monitor closely</string>
     <string name="safety_low">LOW — Can wait</string>

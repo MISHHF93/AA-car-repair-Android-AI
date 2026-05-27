@@ -8,10 +8,11 @@ data class SafetyClassification(
 )
 
 enum class SafetyLevel {
+    RESTRICTED,
     CRITICAL,
     HIGH,
     MEDIUM,
     LOW;
 
-    val isDrivable: Boolean get() = this != CRITICAL
+    val isDrivable: Boolean get() = this != CRITICAL && this != RESTRICTED
 }

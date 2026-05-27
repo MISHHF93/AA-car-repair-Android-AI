@@ -5,6 +5,7 @@ import com.aa.carrepair.domain.model.AgentResponse
 import com.aa.carrepair.domain.model.AgentType
 import com.aa.carrepair.domain.model.ChatMessage
 import com.aa.carrepair.domain.model.MessageRole
+import com.aa.carrepair.domain.model.VehicleContext
 import com.aa.carrepair.domain.model.SafetyClassification
 import com.aa.carrepair.domain.model.SafetyLevel
 import com.aa.carrepair.domain.usecase.chat.GetChatHistoryUseCase
@@ -114,7 +115,7 @@ class ChatViewModelTest {
             confidence = 85,
             safetyAssessment = null
         )
-        coEvery { sendMessageUseCase(any(), any(), any()) } returns DataResult.Success(response)
+        coEvery { sendMessageUseCase(any(), any(), any(), any()) } returns DataResult.Success(response)
 
         viewModel = createViewModel()
         viewModel.initSession("s1")
@@ -129,7 +130,7 @@ class ChatViewModelTest {
 
     @Test
     fun `sendMessage error sets error message`() = runTest {
-        coEvery { sendMessageUseCase(any(), any(), any()) } returns
+        coEvery { sendMessageUseCase(any(), any(), any(), any()) } returns
             DataResult.Error(RuntimeException("Network error"))
 
         viewModel = createViewModel()
@@ -144,7 +145,7 @@ class ChatViewModelTest {
 
     @Test
     fun `sendMessage clears input immediately`() = runTest {
-        coEvery { sendMessageUseCase(any(), any(), any()) } returns
+        coEvery { sendMessageUseCase(any(), any(), any(), any()) } returns
             DataResult.Success(AgentResponse("ok", AgentType.GENERAL, 90, null))
 
         viewModel = createViewModel()
@@ -156,14 +157,15 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `sendMessage passes vehicleVin to use case`() = runTest {
-        coEvery { sendMessageUseCase("s1", "oil change", "1HGCM82633A004352") } returns
+    fun `sendMessage passes vehicle context to use case`() = runTest {
+        val vehicleContext = VehicleContext(vin = "1HGCM82633A004352")
+        coEvery { sendMessageUseCase("s1", "oil change", vehicleContext, null) } returns
             DataResult.Success(AgentResponse("Done", AgentType.ESTIMATOR, 70, null))
 
         viewModel = createViewModel()
         viewModel.initSession("s1")
         viewModel.onInputChanged("oil change")
-        viewModel.sendMessage(vehicleVin = "1HGCM82633A004352")
+        viewModel.sendMessage(vehicleContextOverride = vehicleContext)
         advanceUntilIdle()
 
         assertEquals(AgentType.ESTIMATOR, viewModel.uiState.value.currentAgentType)
@@ -173,7 +175,7 @@ class ChatViewModelTest {
 
     @Test
     fun `clearError resets error to null`() = runTest {
-        coEvery { sendMessageUseCase(any(), any(), any()) } returns
+        coEvery { sendMessageUseCase(any(), any(), any(), any()) } returns
             DataResult.Error(RuntimeException("fail"))
 
         viewModel = createViewModel()

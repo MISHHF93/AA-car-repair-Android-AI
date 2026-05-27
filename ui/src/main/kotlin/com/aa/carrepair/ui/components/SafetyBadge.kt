@@ -28,6 +28,7 @@ fun SafetyBadge(
     modifier: Modifier = Modifier
 ) {
     val (color, textResId) = when (level) {
+        SafetyLevel.RESTRICTED -> SafetyCritical to R.string.safety_restricted
         SafetyLevel.CRITICAL -> SafetyCritical to R.string.safety_critical
         SafetyLevel.HIGH -> SafetyHigh to R.string.safety_high
         SafetyLevel.MEDIUM -> SafetyMedium to R.string.safety_medium
