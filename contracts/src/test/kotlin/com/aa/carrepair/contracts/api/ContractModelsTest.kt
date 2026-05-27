@@ -62,40 +62,43 @@ class ContractModelsTest {
     // --- AgentApiContract ---
 
     @Test
-    fun `AgentChatRequest defaults`() {
-        val request = AgentChatRequest(sessionId = "s1", message = "Hello")
-        assertEquals("s1", request.sessionId)
-        assertEquals("Hello", request.message)
-        assertNull(request.agentType)
-        assertNull(request.persona)
-        assertTrue(request.context.isEmpty())
-        assertNull(request.vehicleVin)
-    }
-
-    @Test
-    fun `AgentChatRequest with all fields`() {
-        val context = listOf(MessageContext(role = "user", content = "Previous message"))
+    fun `AgentChatRequest holds mobile chat contract`() {
         val request = AgentChatRequest(
-            sessionId = "s1", message = "Help", agentType = "DIAGNOSIS",
-            persona = "DIY_OWNER", context = context, vehicleVin = "VIN123"
+            requestId = "req-1",
+            timestampUtc = "2026-05-27T16:00:00Z",
+            surface = "mobile",
+            userRole = "consumer",
+            locale = "en-CA",
+            queryText = "P0171",
+            policyProfile = "mobile_default",
+            privacyMode = "standard"
         )
-        assertEquals("DIAGNOSIS", request.agentType)
-        assertEquals(1, request.context.size)
-        assertEquals("VIN123", request.vehicleVin)
+
+        assertEquals("req-1", request.requestId)
+        assertEquals("mobile", request.surface)
+        assertEquals("consumer", request.userRole)
+        assertEquals("en-CA", request.locale)
+        assertEquals("P0171", request.queryText)
+        assertEquals("mobile_default", request.policyProfile)
+        assertEquals("standard", request.privacyMode)
     }
 
     @Test
-    fun `AgentChatResponse holds response fields`() {
+    fun `AgentChatResponse holds copilot response fields`() {
         val response = AgentChatResponse(
-            sessionId = "s1", messageId = "m1", content = "Check your oil",
-            agentType = "GENERAL", confidence = 85, safetyLevel = "LOW",
-            suggestedActions = listOf("Schedule service"),
-            metadata = mapOf("source" to "kb")
+            answerText = "Check your intake for vacuum leaks.",
+            confidence = 85,
+            safetyLevel = "LOW",
+            citations = listOf("AA-DTC-P0171"),
+            auditTraceId = "audit-1"
         )
-        assertEquals("Check your oil", response.content)
+
+        assertEquals("Check your intake for vacuum leaks.", response.answerText)
         assertEquals(85, response.confidence)
-        assertEquals(1, response.suggestedActions.size)
-        assertEquals("kb", response.metadata["source"])
+        assertEquals("LOW", response.safetyLevel)
+        assertEquals(1, response.citations.size)
+        assertEquals("audit-1", response.auditTraceId)
+        assertEquals("mobile", response.surface)
     }
 
     @Test

@@ -150,7 +150,10 @@ fun AppNavGraph(
 
             composable(
                 route = Screen.Chat("").route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                arguments = listOf(navArgument("sessionId") {
+                    type = NavType.StringType
+                    defaultValue = "new"
+                })
             ) { backStackEntry ->
                 val sessionId = backStackEntry.arguments?.getString("sessionId") ?: "new"
                 ChatScreen(

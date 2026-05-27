@@ -17,11 +17,11 @@ data class AgentChatRequest(
 
 @JsonClass(generateAdapter = true)
 data class AgentChatResponse(
-    @Json(name = "response_id") val responseId: String,
-    @Json(name = "request_id") val requestId: String,
-    @Json(name = "surface") val surface: String,
+    @Json(name = "response_id") val responseId: String = "",
+    @Json(name = "request_id") val requestId: String = "",
+    @Json(name = "surface") val surface: String = "mobile",
     @Json(name = "answer_text") val answerText: String,
-    @Json(name = "answer_format") val answerFormat: String,
+    @Json(name = "answer_format") val answerFormat: String = "text",
     @Json(name = "confidence") val confidence: Int,
     @Json(name = "safety_level") val safetyLevel: String,
     @Json(name = "citations") val citations: List<String> = emptyList(),

@@ -113,7 +113,7 @@
     <string name="home_desc_inspection">Visual AI scan</string>
 
     <!-- Chat Screen -->
-    <string name="chat_title">AI Chat</string>
+    <string name="chat_title">AA AI Garage Copilot</string>
     <string name="chat_input_hint">Ask me anything about your vehicle…</string>
     <string name="chat_send_button">Send message</string>
     <string name="chat_attach_image">Attach image</string>

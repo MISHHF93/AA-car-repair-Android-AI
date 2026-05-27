@@ -15,7 +15,6 @@ import com.aa.carrepair.domain.repository.ChatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
-import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
@@ -40,26 +39,32 @@ class ChatRepositoryImpl @Inject constructor(
                 AgentChatRequest(
                     requestId = requestId,
                     timestampUtc = Instant.now().toString(),
-                    surface = "android_app",
-                    userRole = "driver",
-                    locale = Locale.getDefault().toLanguageTag(),
+                    surface = "mobile",
+                    userRole = "consumer",
+                    locale = "en-CA",
                     queryText = message,
-                    policyProfile = "default",
+                    policyProfile = "mobile_default",
                     privacyMode = "standard"
                 )
             )
 
             val answerText = buildString {
+                append("answer_text: ")
                 append(response.answerText)
-                if (response.citations.isNotEmpty()) {
-                    append("\n\nCitations:\n")
-                    response.citations.forEach { append("- ").append(it).append("\n") }
+                append("\nconfidence: ").append(response.confidence)
+                append("\nsafety_level: ").append(response.safetyLevel)
+                append("\ncitations:")
+                if (response.citations.isEmpty()) {
+                    append(" None")
+                } else {
+                    response.citations.forEach { append("\n- ").append(it) }
                 }
+                append("\naudit_trace_id: ").append(response.auditTraceId)
             }.trim()
 
             chatDao.insert(
                 ChatMessageEntity(
-                    id = response.responseId,
+                    id = response.responseId.ifBlank { UUID.randomUUID().toString() },
                     sessionId = sessionId,
                     content = answerText,
                     role = MessageRole.ASSISTANT.name,

@@ -73,6 +73,12 @@ out/
 
 # Python
 *.pyc
+.venv/
+
+# Node / archived web dependencies
+node_modules/
+node_modules-leftover/
+archive/duplicated-code/root-vite-web/
 
 # Coverage reports
 *.exec
