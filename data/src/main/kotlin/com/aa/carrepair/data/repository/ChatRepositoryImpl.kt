@@ -1,7 +1,6 @@
 package com.aa.carrepair.data.repository
 
 import com.aa.carrepair.contracts.api.AgentChatRequest
-import com.aa.carrepair.contracts.api.MessageContext
 import com.aa.carrepair.core.result.DataResult
 import com.aa.carrepair.core.result.safeApiCall
 import com.aa.carrepair.data.local.dao.ChatDao
@@ -16,6 +15,8 @@ import com.aa.carrepair.domain.repository.ChatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
@@ -33,26 +34,54 @@ class ChatRepositoryImpl @Inject constructor(
         message: String,
         vehicleVin: String?
     ): DataResult<AgentResponse> {
-        val recentMessages = chatDao.getRecentMessages(sessionId, 10)
-        val context = recentMessages.map { MessageContext(it.role, it.content) }
-
         return safeApiCall {
+            val requestId = UUID.randomUUID().toString()
             val response = agentApi.chat(
                 AgentChatRequest(
-                    sessionId = sessionId,
-                    message = message,
-                    context = context,
-                    vehicleVin = vehicleVin
+                    requestId = requestId,
+                    timestampUtc = Instant.now().toString(),
+                    surface = "android_app",
+                    userRole = "driver",
+                    locale = Locale.getDefault().toLanguageTag(),
+                    queryText = message,
+                    policyProfile = "default",
+                    privacyMode = "standard"
                 )
             )
+
+            val answerText = buildString {
+                append(response.answerText)
+                if (response.citations.isNotEmpty()) {
+                    append("\n\nCitations:\n")
+                    response.citations.forEach { append("- ").append(it).append("\n") }
+                }
+            }.trim()
+
+            chatDao.insert(
+                ChatMessageEntity(
+                    id = response.responseId,
+                    sessionId = sessionId,
+                    content = answerText,
+                    role = MessageRole.ASSISTANT.name,
+                    agentType = AgentType.DIAGNOSIS.name,
+                    timestamp = Instant.now(),
+                    confidence = response.confidence,
+                    safetyLevel = response.safetyLevel,
+                    attachmentUri = null
+                )
+            )
+
             AgentResponse(
-                content = response.content,
-                agentType = AgentType.values().firstOrNull {
-                    it.name.equals(response.agentType, ignoreCase = true)
-                } ?: AgentType.GENERAL,
+                content = response.answerText,
+                agentType = AgentType.DIAGNOSIS,
                 confidence = response.confidence,
                 safetyAssessment = null,
-                suggestedActions = response.suggestedActions
+                suggestedActions = response.nextActions,
+                metadata = mapOf(
+                    "safety_level" to response.safetyLevel,
+                    "citations" to response.citations.joinToString(" | "),
+                    "audit_trace_id" to response.auditTraceId
+                )
             )
         }
     }

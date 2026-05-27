@@ -22,7 +22,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "AA_API_BASE_URL", "\"${project.findProperty("AA_API_BASE_URL") ?: "https://api.aa-carrepair.com/"}\"")
+        buildConfigField("String", "AA_API_BASE_URL", "\"${project.findProperty("AA_API_BASE_URL") ?: "http://10.0.2.2:8000/"}\"")
         buildConfigField("String", "AA_API_KEY", "\"${project.findProperty("AA_API_KEY") ?: ""}\"")
     }
 
